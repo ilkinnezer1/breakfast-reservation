@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
+	"myapp/pkg/config"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -17,30 +18,33 @@ func HandleError(err error) {
 	}
 }
 
+
+var app *config.AppConfig
+func CreateNewTemplates(a *config.AppConfig){
+	app = a
+}
+
 func RenderTemplate(w http.ResponseWriter, html string) {
 	// TODO:
 	//Create the template cache
-	tempCache, err := createTemplateCache()
-	if err != nil {
-		log.Fatal(err)
-	}
+	tempCache := app.TemplateCache
 
 	// Get request template cache
 	temp, ok := tempCache[html]
 	if !ok {
-		log.Fatal(err)
+		log.Fatal("Couldn't get the template cache")
 	}
 	// Hold bytes
 	buffer := new(bytes.Buffer)
 
-	err = temp.Execute(buffer, nil)
+	err := temp.Execute(buffer, nil)
 	HandleError(err)
 	// render the template
 	_, err = buffer.WriteTo(w)
 	HandleError(err)
 }
 
-func createTemplateCache() (map[string]*template.Template, error) {
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 	// Create entire cache
 	// Get all files from templates folder
