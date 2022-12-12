@@ -1,14 +1,41 @@
 package handlers
 
 import (
-	"net/http"
+	"myapp/pkg/config"
+	"myapp/pkg/models"
 	"myapp/render"
+	"net/http"
 )
-// HomePage is the home page handler
-func HomePage(w http.ResponseWriter, r *http.Request){
-	render.RenderTemplate(w, "home.html")
+
+// Use Repository Pattern
+
+// Used by handlers
+var Repo *Repository
+
+type Repository struct {
+	App *config.AppConfig
 }
-func AboutPage(w http.ResponseWriter, r *http.Request){
-	render.RenderTemplate(w, "about.html")
+// CreateNewRepo creates new repository
+func CreateNewRepo(a *config.AppConfig) *Repository { 
+	return &Repository{
+		App: a,
+	}
+}
+ //CreateNewHandlers sets the repo for the handlers
+func CreateNewHandlers(r *Repository){
+	Repo = r
+}
+
+// HomePage is the home page handler
+func (m *Repository) HomePage(w http.ResponseWriter, r *http.Request){
+	render.RenderTemplate(w, "home.html", &models.TemplateData{})
+}
+func (m *Repository) AboutPage(w http.ResponseWriter, r *http.Request){
+	stringMap := make(map[string]string)
+	stringMap["reserved"] = "Welcome to the Reservation Center"
+
+	render.RenderTemplate(w, "about.html", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
 

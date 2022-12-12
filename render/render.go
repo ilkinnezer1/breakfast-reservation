@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"myapp/pkg/config"
 	"log"
+	"myapp/pkg/config"
+	"myapp/pkg/models"
 	"net/http"
 	"path/filepath"
 )
@@ -24,11 +25,20 @@ func CreateNewTemplates(a *config.AppConfig){
 	app = a
 }
 
-func RenderTemplate(w http.ResponseWriter, html string) {
+func AddDefaultData(td *models.TemplateData) *models.TemplateData{
+	return td
+}
+
+func RenderTemplate(w http.ResponseWriter, html string, td *models.TemplateData) {
 	// TODO:
 	//Create the template cache
-	tempCache := app.TemplateCache
+	var tempCache map[string]*template.Template
 
+	if app.UseCache {
+		tempCache = app.TemplateCache
+	} else{
+		tempCache, _ = CreateTemplateCache()
+	}
 	// Get request template cache
 	temp, ok := tempCache[html]
 	if !ok {
@@ -37,7 +47,9 @@ func RenderTemplate(w http.ResponseWriter, html string) {
 	// Hold bytes
 	buffer := new(bytes.Buffer)
 
-	err := temp.Execute(buffer, nil)
+	td = AddDefaultData(td)
+
+	err := temp.Execute(buffer, td)
 	HandleError(err)
 	// render the template
 	_, err = buffer.WriteTo(w)

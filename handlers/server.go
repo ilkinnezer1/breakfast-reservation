@@ -17,10 +17,15 @@ func Start(){
 		log.Fatal(err)
 	}
 	app.TemplateCache = templCache
+	app.UseCache = false
+	// Use repo pattern
+	repo := CreateNewRepo(&app)
+	CreateNewHandlers(repo)
+
 
 	render.CreateNewTemplates(&app)
-	http.HandleFunc("/", HomePage)
-	http.HandleFunc("/about", AboutPage)
+	http.HandleFunc("/", Repo.HomePage)
+	http.HandleFunc("/about", Repo.AboutPage)
 	fmt.Println(fmt.Sprintf("Server is running on port %s", port))
 	http.ListenAndServe(port, nil)
 }
