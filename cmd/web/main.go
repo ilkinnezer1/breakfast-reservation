@@ -1,8 +1,8 @@
 package main
 
 import (
-	"myapp/handlers"
+	"myapp/server"
 )
 func main() {
-	handlers.Start()
+	server.Start()
 }
