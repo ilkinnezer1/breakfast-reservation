@@ -32,7 +32,7 @@ func (m *Repository) HomePage(w http.ResponseWriter, r *http.Request){
 }
 func (m *Repository) AboutPage(w http.ResponseWriter, r *http.Request){
 	stringMap := make(map[string]string)
-	stringMap["reserved"] = "Welcome to the Reservation Center"
+	stringMap["reserved"] = "Welcome to the Reservation Centerr"
 
 	render.RenderTemplate(w, "about.html", &models.TemplateData{
 		StringMap: stringMap,

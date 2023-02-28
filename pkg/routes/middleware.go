@@ -11,7 +11,6 @@ var app config.AppConfig
 
 func GenerateNoSurf(next http.Handler) http.Handler{
 	csrfHandler := nosurf.New(next)
-
 	csrfHandler.SetBaseCookie(http.Cookie{
 		HttpOnly: true,
 		Path: "/",
@@ -22,6 +21,3 @@ func GenerateNoSurf(next http.Handler) http.Handler{
 	return csrfHandler
 }
 
-func LoadSession(next http.Handler) http.Handler{
-	return app.Session.LoadAndSave(next)
-}
